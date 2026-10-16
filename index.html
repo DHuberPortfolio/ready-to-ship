@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ready to ship? · A checklist for AI workflows</title>
+<meta name="description" content="Twelve yes-or-no questions about the mistakes nobody would see. Each yes has a bar to clear, and the scorecard lists every gap, what to fix first, and what you could run meanwhile. Runs in your browser.">
+<meta property="og:title" content="Is your AI workflow ready to ship?">
+<meta property="og:description" content="Twelve yes-or-no questions, each with a bar for a yes, and a scorecard of what to fix first.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230A0E17'/><path d='M27 52l15 15 32-34' fill='none' stroke='%235EEAD4' stroke-width='11' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,650;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Colours and fonts match devinhuber.com and error-rate-calculator. */
+  :root {
+    --ground: #0A0E17; --panel: #10172A; --raise: #172039;
+    --line: #243052; --line-soft: #1A2440;
+    --ink: #EEF2FA; --muted: #A3AEC4; --faint: #8490A8;
+    --violet: #A78BFA; --mint: #5EEAD4; --amber: #FBBF5C; --rose: #FB7185; --sky: #7DD3FC;
+    --violet-soft: rgba(167,139,250,.16); --mint-soft: rgba(94,234,212,.14);
+    --amber-soft: rgba(251,191,92,.15); --rose-soft: rgba(251,113,133,.15); --sky-soft: rgba(125,211,252,.13);
+    --grad: linear-gradient(100deg,#5EEAD4 0%,#7DD3FC 34%,#A78BFA 66%,#FB7185 100%);
+    --display: "Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+    --body: "IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+    --mono: "IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { scroll-padding-top: 76px; }
+  body {
+    background: var(--ground);
+    background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(94,234,212,.10), transparent 70%);
+    color: var(--ink); font: 400 16px/1.6 var(--body); -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--violet); text-underline-offset: 3px; }
+  a:hover { color: var(--ink); }
+  .wrap { max-width: 900px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 16px; top: 12px; background: var(--panel); padding: 8px 12px; border-radius: 6px; z-index: 30; }
+  :focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+
+  .top { border-bottom: 1px solid var(--line-soft); }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
+  .brand { font: 650 17px/1 var(--display); color: var(--ink); text-decoration: none; }
+  .top nav { display: flex; gap: 20px; font-size: 14px; }
+  .top nav a { color: var(--muted); text-decoration: none; }
+  .top nav a:hover { color: var(--ink); }
+
+  .eyebrow { font: 500 12px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--c, var(--mint)); }
+  .hero { padding-block: clamp(40px, 8vw, 84px) clamp(24px, 4vw, 40px); }
+  h1 { font: 800 clamp(38px, 6.4vw, 68px)/1 var(--display); letter-spacing: -.025em; margin-top: 18px; max-width: 15ch; }
+  h1 em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lede { color: var(--muted); font-size: clamp(17px, 2vw, 19px); max-width: 60ch; margin-top: 20px; }
+  .lede strong { color: var(--ink); font-weight: 600; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 18px; font: 400 13px/1.4 var(--mono); color: var(--faint); }
+  .presets { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 26px; font-size: 14px; color: var(--faint); }
+  .pill {
+    font: 500 13px/1 var(--mono); color: var(--ink); background: var(--panel); border: 1px solid var(--line);
+    border-radius: 999px; padding: 9px 14px; cursor: pointer;
+  }
+  .pill:hover { border-color: var(--mint); }
+
+  /* ---- progress rail ---- */
+  .rail { position: sticky; top: 0; z-index: 20; background: rgba(10,14,23,.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-block: 1px solid var(--line-soft); }
+  .rail .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; min-height: 58px; padding-block: 8px; }
+  .cells { display: flex; gap: 5px; flex-wrap: wrap; }
+  .cell {
+    width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; text-decoration: none;
+    font: 500 12px/1 var(--mono); color: var(--faint); background: var(--panel); border: 1px solid var(--line);
+  }
+  .cell:hover { color: var(--ink); border-color: var(--muted); }
+  .cell.met { background: var(--mint-soft); border-color: rgba(94,234,212,.5); color: var(--mint); }
+  .cell.gap { background: var(--rose-soft); border-color: rgba(251,113,133,.55); color: var(--rose); }
+  .cell.na { background: transparent; border-style: dashed; opacity: .55; }
+  .cell.optional { border-style: dashed; }
+  .rail-sum { font-size: 14px; color: var(--muted); display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .rail-sum strong { color: var(--ink); font-weight: 600; }
+  .rail-sum a { font-weight: 500; }
+  @media (max-width: 600px) {
+    .rail .wrap { min-height: 0; gap: 6px; }
+    .cells { gap: 3px; flex-wrap: nowrap; }
+    .cell { width: 23px; height: 23px; font-size: 11px; border-radius: 6px; }
+    .rail-sum { font-size: 13px; gap: 10px; }
+  }
+
+  /* ---- sections and cards ---- */
+  .stage { padding-top: clamp(36px, 6vw, 56px); }
+  h2 { font: 650 clamp(24px, 3vw, 30px)/1.15 var(--display); letter-spacing: -.01em; margin-top: 10px; }
+  .stage-blurb { color: var(--muted); margin-top: 6px; max-width: 60ch; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: clamp(18px, 3.2vw, 30px); }
+  .stack { display: grid; gap: 16px; margin-top: 20px; }
+
+  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 18px; border: 0; }
+  .mode { position: relative; display: block; cursor: pointer; background: var(--ground); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 16px; }
+  .mode:hover { border-color: var(--muted); }
+  .mode-top { display: flex; align-items: center; gap: 10px; }
+  .mode input { width: 16px; height: 16px; margin: 0; accent-color: var(--mint); flex: none; }
+  .mode .mode-name { display: block; font: 600 16px/1.3 var(--body); }
+  .mode .mode-detail { display: block; color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .mode .mode-count { display: block; font: 500 12px/1 var(--mono); color: var(--faint); margin-top: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  .mode:has(input:checked) { border-color: var(--mint); background: rgba(94,234,212,.06); box-shadow: 0 0 0 3px var(--mint-soft); }
+  .mode:has(input:focus-visible) { outline: 2px solid var(--violet); outline-offset: 2px; }
+  .hint { color: var(--faint); font-size: 14px; margin-top: 14px; max-width: 70ch; }
+  .name-field { display: grid; gap: 6px; margin-top: 18px; font-size: 14px; color: var(--muted); max-width: 420px; }
+
+  input[type=text], input[type=number], textarea {
+    width: 100%; font: 400 15px/1.4 var(--body); color: var(--ink); background: var(--ground);
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  }
+  input[type=number] { font: 500 18px/1 var(--mono); }
+  input:focus, textarea:focus { outline: none; border-color: var(--violet); box-shadow: 0 0 0 3px var(--violet-soft); }
+  input[aria-invalid="true"] { border-color: var(--rose); }
+  textarea { min-height: 76px; resize: vertical; }
+
+  /* ---- a question ---- */
+  .q { position: relative; border-left-width: 4px; }
+  .q[data-status="met"] { border-left-color: var(--mint); }
+  .q[data-status="gap"] { border-left-color: var(--rose); }
+  .q[data-applies="na"] { opacity: .55; border-style: dashed; }
+  .q-head { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 14px; align-items: start; }
+  .q-num { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font: 500 15px/1 var(--mono); background: var(--raise); color: var(--muted); }
+  .q[data-status="met"] .q-num { background: var(--mint-soft); color: var(--mint); }
+  .q[data-status="gap"] .q-num { background: var(--rose-soft); color: var(--rose); }
+  .q-title { font: 650 13px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--faint); margin-top: 2px; }
+  .ask { font: 600 clamp(18px, 2.2vw, 21px)/1.35 var(--body); margin-top: 6px; max-width: 58ch; }
+  .plain { color: var(--muted); font-size: 15px; margin-top: 6px; max-width: 62ch; }
+  .q-body { margin-left: 52px; }
+  @media (max-width: 560px) { .q-body { margin-left: 0; } }
+  .yes-bar { background: var(--raise); border: 0; border-radius: 10px; padding: 12px 14px 8px; margin-top: 16px; font-size: 15px; color: var(--muted); max-width: 66ch; min-width: 0; }
+  .yes-bar legend { float: left; width: 100%; padding: 0; }
+  .yes-bar b { display: block; font: 500 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mint); }
+  .bar-hint { clear: both; font-size: 13px; color: var(--faint); margin: 4px 0 2px; }
+  .tick { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; padding: 7px 0; cursor: pointer; color: var(--ink); }
+  .tick input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--mint); cursor: pointer; }
+  .tick input:disabled { cursor: not-allowed; }
+  .tick input:disabled + span { opacity: .6; }
+  .computed-bar { font-size: 14px; color: var(--muted); padding: 6px 0 4px 30px; }
+  .yes-bar .numbers { margin: 4px 0 8px 30px; }
+  .q-answer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 12px; }
+  .no-btn { font: 500 14px/1 var(--body); padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+  .no-btn:hover { border-color: var(--rose); color: var(--ink); }
+  .no-btn[aria-pressed="true"] { background: var(--rose-soft); border-color: var(--rose); color: var(--rose); }
+  .no-btn[aria-pressed="true"]::before { content: "✗ "; }
+  .no-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .q-status { font-size: 14px; color: var(--muted); max-width: 60ch; }
+  .q-status.warn { color: var(--amber); }
+
+
+  .note { font-size: 14px; color: var(--faint); margin-top: 12px; max-width: 64ch; border-left: 2px solid var(--line); padding-left: 12px; }
+  .note.warn { color: var(--amber); border-color: var(--amber); }
+  .note strong { color: var(--muted); font-weight: 600; }
+  .if-no { margin-top: 14px; background: var(--rose-soft); border-radius: 10px; padding: 12px 14px; max-width: 66ch; font-size: 15px; }
+  .if-no b { display: block; font: 500 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--rose); margin-bottom: 4px; }
+  .tool-link { display: inline-block; margin-top: 8px; font-weight: 500; }
+
+  .numbers { display: flex; flex-wrap: wrap; align-items: end; gap: 10px 12px; margin-top: 16px; font-size: 14px; color: var(--muted); }
+  .numbers label { display: grid; gap: 6px; }
+  .numbers input { width: 110px; }
+  .numbers .joiner { padding-bottom: 12px; font: 500 15px/1 var(--mono); color: var(--faint); }
+  .problem { color: var(--rose); font-size: 14px; margin-top: 8px; }
+
+  .worked { margin-top: 16px; background: var(--ground); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; max-width: 66ch; }
+  .worked .big { font: 800 clamp(26px, 4vw, 34px)/1.1 var(--display); letter-spacing: -.02em; margin-top: 6px; }
+  .worked .say { color: var(--muted); margin-top: 10px; font-size: 15px; }
+  .worked .say strong { color: var(--ink); font-weight: 600; }
+  .range { position: relative; height: 12px; background: var(--raise); border-radius: 999px; margin-top: 16px; }
+  .range .band { position: absolute; top: 0; bottom: 0; border-radius: 999px; min-width: 4px; background: var(--violet); box-shadow: 0 0 16px rgba(167,139,250,.4); }
+  .range .dot { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--ink); border: 3px solid var(--ground); }
+  .range .limit { position: absolute; top: -7px; bottom: -7px; width: 2px; margin-left: -1px; background: var(--amber); }
+  .axis { display: flex; justify-content: space-between; font: 400 12px/1 var(--mono); color: var(--faint); margin-top: 8px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font: 400 12px/1 var(--mono); color: var(--faint); margin-top: 10px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+  details { margin-top: 12px; }
+  summary { cursor: pointer; font-size: 14px; font-weight: 500; color: var(--violet); width: fit-content; list-style-position: outside; }
+  summary:hover { color: var(--ink); }
+  .more { max-width: 66ch; }
+  .more p { color: var(--muted); font-size: 15px; margin-top: 8px; }
+  .more p strong { color: var(--ink); font-weight: 600; }
+  .sources { font-size: 13px !important; color: var(--faint) !important; }
+  .sources a { color: var(--muted); }
+  .q-actions { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+  .evidence textarea { margin-top: 8px; max-width: 66ch; }
+
+  /* ---- the scorecard ---- */
+  .scorecard { margin-top: clamp(40px, 7vw, 64px); border-color: var(--line); box-shadow: 0 0 0 1px rgba(167,139,250,.08), 0 30px 80px -40px rgba(167,139,250,.35); }
+  .verdict { font: 800 clamp(32px, 5vw, 48px)/1.05 var(--display); letter-spacing: -.02em; margin-top: 10px; }
+  .verdict.ready { color: var(--mint); }
+  .verdict.not-ready { color: var(--rose); }
+  .verdict-sub { color: var(--muted); margin-top: 10px; }
+  .strip { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; margin-top: 22px; }
+  .strip .cell { width: auto; height: 34px; display: flex; align-items: center; justify-content: center; }
+  /* Not by colour alone: the strip also marks each cell. */
+  .strip .cell.met::before { content: "✓\00a0"; }
+  .strip .cell.gap::before { content: "✗\00a0"; }
+  .strip .cell.na::before { content: "–\00a0"; }
+  .sc-block { margin-top: 28px; }
+  .sc-block h3 { font: 650 19px/1.25 var(--display); }
+  .sc-block > p { color: var(--muted); margin-top: 6px; max-width: 66ch; }
+  .gaps { list-style: none; display: grid; gap: 12px; margin-top: 14px; }
+  .gaps > li { background: var(--ground); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .gap-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+  .gap-head a { font-weight: 600; color: var(--ink); text-decoration: none; }
+  .gap-head a:hover { color: var(--violet); }
+  .tag { font: 500 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; padding: 5px 8px; border-radius: 999px; }
+  .tag.start { color: var(--mint); background: var(--mint-soft); }
+  .tag.after { color: var(--faint); background: var(--raise); }
+  .gaps p { color: var(--muted); font-size: 15px; margin-top: 8px; }
+  .gaps p b { color: var(--ink); font-weight: 600; }
+  .gaps .done { font-size: 14px; color: var(--faint); margin-top: 8px; }
+  .gaps .done b { color: var(--muted); font-weight: 600; }
+  .gaps .done ul { margin: 4px 0 0 18px; }
+  .gaps .done li { margin-top: 2px; }
+  .box { border-radius: 12px; padding: 16px 18px; margin-top: 14px; }
+  .box.fallback { background: var(--sky-soft); border: 1px solid rgba(125,211,252,.35); }
+  .box.next { background: var(--violet-soft); border: 1px solid rgba(167,139,250,.35); }
+  .box h3 { font: 650 18px/1.25 var(--display); }
+  .box > p { color: var(--muted); margin-top: 6px; font-size: 15px; max-width: 66ch; }
+  .needs { list-style: none; margin-top: 10px; display: grid; gap: 6px; font-size: 15px; }
+  .needs li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; }
+  .needs .mark { font: 600 14px/1.6 var(--mono); }
+  .needs .mark.met { color: var(--mint); } .needs .mark.gap { color: var(--rose); } .needs .mark.check, .needs .mark.unanswered { color: var(--amber); }
+  .needs span.why { color: var(--faint); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line-soft); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--body); padding: 12px 16px;
+    border-radius: 8px; border: 1px solid var(--line); color: var(--ink); background: transparent; cursor: pointer;
+  }
+  .btn:hover { border-color: var(--violet); }
+  .btn.primary { background: var(--ink); color: var(--ground); border-color: var(--ink); font-weight: 600; }
+  .btn.primary:hover { background: var(--mint); border-color: var(--mint); }
+  .btn.quiet { color: var(--faint); }
+  .done-msg { font-size: 14px; color: var(--mint); }
+  .fallback-text { width: 100%; min-height: 200px; font: 400 13px/1.5 var(--mono); margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  th { font: 500 11px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--faint); }
+  td { color: var(--muted); }
+  td.ans-yes { color: var(--mint); } td.ans-no { color: var(--rose); }
+  .table-wrap { overflow-x: auto; }
+
+  /* ---- how it works ---- */
+  .how { padding-block: clamp(40px, 7vw, 72px); border-top: 1px solid var(--line-soft); margin-top: clamp(40px, 7vw, 64px); }
+  .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 26px 40px; margin-top: 26px; }
+  .how h3 { font: 650 18px/1.25 var(--display); }
+  .how p { color: var(--muted); margin-top: 8px; font-size: 15px; }
+  code { font: 400 .92em var(--mono); background: var(--raise); padding: 1px 6px; border-radius: 4px; }
+
+  footer { border-top: 1px solid var(--line-soft); padding: 28px 0 40px; font-size: 14px; color: var(--faint); }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+    .q, .cell { transition: border-color .15s ease, background-color .15s ease, opacity .15s ease; }
+  }
+
+  /* ---- printing: the scorecard alone, on white ---- */
+  @media print {
+    :root { --ground: #fff; --panel: #fff; --raise: #f1f3f7; --line: #c9cfdb; --line-soft: #e2e6ee; --ink: #10141f; --muted: #3a4357; --faint: #5d6679; --mint: #0f766e; --rose: #be123c; --amber: #a16207; --violet: #5b21b6; --sky: #0369a1;
+      --mint-soft: #e6f6f4; --rose-soft: #fdecef; --amber-soft: #fdf3e1; --violet-soft: #f1ecfd; --sky-soft: #e8f3fa; color-scheme: light; }
+    body { background: #fff; background-image: none; font-size: 11pt; }
+    .top, .hero, .rail, .stage, #design, .how, footer, .actions, .skip { display: none !important; }
+    .wrap { max-width: none; padding: 0; }
+    .scorecard { margin: 0; border: 0; box-shadow: none; padding: 0; }
+    .gaps > li, .box { break-inside: avoid; }
+    details > summary { display: none; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#design">Skip to the checklist</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="https://devinhuber.com/">Devin Huber</a>
+    <nav aria-label="Links">
+      <a href="#how">How it works</a>
+      <a href="https://github.com/DHuberPortfolio/ready-to-ship/blob/main/METHOD.md" target="_blank" rel="noopener">Method</a>
+      <a href="https://github.com/DHuberPortfolio/ready-to-ship" target="_blank" rel="noopener">Source</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero wrap">
+    <p class="eyebrow">Free checklist · runs in your browser</p>
+    <h1>Is your AI workflow <em>ready to ship?</em></h1>
+    <p class="lede">Twelve yes-or-no questions about the mistakes nobody would see. <strong>Each yes has a bar to clear.</strong> At the end, a scorecard lists every gap, what to fix first, and what you could run in the meantime.</p>
+    <p class="meta"><span>About 10 minutes</span><span>For n8n, Zapier, code or anything else</span><span>Nothing you type leaves this page</span></p>
+    <div class="presets" role="group" aria-label="Try an example">
+      <span>Try an example:</span>
+      <button type="button" class="pill" data-preset="first">A first build</button>
+      <button type="button" class="pill" data-preset="twenty">Tested on 20</button>
+      <button type="button" class="pill" data-preset="ready">Ready to ship</button>
+    </div>
+  </section>
+
+  <nav class="rail" aria-label="Progress">
+    <div class="wrap">
+      <div class="cells" id="rail-cells"></div>
+      <div class="rail-sum" id="rail-sum" aria-live="polite"></div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <section class="stage" id="design" aria-labelledby="h-design">
+      <p class="eyebrow" style="--c: var(--sky)">First</p>
+      <h2 id="h-design">How will its work go out?</h2>
+      <p class="stage-blurb">Readiness depends on how much the workflow does on its own, so the questions that count depend on the design. Answer for the design you plan to ship.</p>
+      <div class="card stack">
+        <fieldset class="modes" id="modes">
+          <legend class="sr-only">The design you plan to ship</legend>
+        </fieldset>
+        <p class="hint">“Goes out” means anything with an effect: an email sent, a record saved, a tag published, a ticket closed.</p>
+        <label class="name-field"><span>Workflow name (optional, for the scorecard)</span>
+          <input id="wf-name" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Support inbox triage"></label>
+      </div>
+    </section>
+
+    <div id="stages"></div>
+
+    <section class="card scorecard" id="scorecard" aria-labelledby="verdict">
+      <p class="eyebrow" style="--c: var(--violet)">Your scorecard</p>
+      <h2 class="verdict" id="verdict" aria-live="polite"></h2>
+      <p class="verdict-sub" id="verdict-sub"></p>
+      <div class="strip" id="strip"></div>
+      <div id="sc-body"></div>
+      <div class="actions">
+        <button class="btn primary" type="button" id="copy-md">Copy as Markdown</button>
+        <button class="btn" type="button" id="print">Print or save as PDF</button>
+        <button class="btn" type="button" id="copy-link">Copy a link to these answers</button>
+        <button class="btn quiet" type="button" id="reset">Start over</button>
+        <span class="done-msg" id="done-msg" aria-live="polite"></span>
+      </div>
+      <div id="md-fallback"></div>
+    </section>
+  </div>
+
+  <section class="how wrap" id="how" aria-labelledby="h-how">
+    <p class="eyebrow" style="--c: var(--amber)">How it works</p>
+    <h2 id="h-how">Why it’s built this way</h2>
+    <div class="how-grid">
+      <div>
+        <h3>A yes has a bar</h3>
+        <p>Under every question is its bar: one to three things that have to be true, each with its own tick. All ticked is a yes; anything less is a no. A no isn’t a failing grade: it’s the next thing to do, and the scorecard says how to start.</p>
+      </div>
+      <div>
+        <h3>No “partly”</h3>
+        <p>Each bar is either cleared or it isn’t, so “partly” is a no. Survey research finds that an easy way out, such as “not sure,” gets picked to skip thinking the question through. Here, not sure means no evidence, and no evidence means no.</p>
+      </div>
+      <div>
+        <h3>One gap is enough</h3>
+        <p>There’s no “10 of 12, so mostly ready.” Each question guards against a different way of failing silently, so a strong answer on one can’t cover for another. Google’s ML Test Score takes the lowest section score for the same reason.</p>
+      </div>
+      <div>
+        <h3>Ready for what?</h3>
+        <p>A workflow where a person approves everything needs four of these, one of which tests the reviewers themselves. One that lets outputs go out alone needs up to twelve. When the design you planned isn’t ready, the scorecard lists what the cautious one would need, so the work can start while you close the gaps.</p>
+      </div>
+      <div>
+        <h3>Numbers over opinions</h3>
+        <p>Question 5 can only be a yes when your limit and counts are filled in and the arithmetic agrees, and question 11 gets a spot-check plan worked out from your limit. Both use the same likely range as my <a href="https://dhuberportfolio.github.io/error-rate-calculator/" target="_blank" rel="noopener">error-rate calculator</a> and <a href="https://github.com/DHuberPortfolio/workflow-eval-harness" target="_blank" rel="noopener">eval harness</a>, so all three agree to the decimal.</p>
+      </div>
+      <div>
+        <h3>Where the questions come from</h3>
+        <p>From failures I found when I measured two AI workflows I’d built, checked against NIST’s AI Risk Management Framework, the EU AI Act, OWASP’s list of LLM risks, and research on checklists, automation and statistics. <a href="https://github.com/DHuberPortfolio/ready-to-ship/blob/main/METHOD.md" target="_blank" rel="noopener">The method</a> gives the reasoning and every source.</p>
+      </div>
+      <div>
+        <h3>What it doesn’t check</h3>
+        <p>Whether you’re allowed to use the data, security beyond basic prompt injection, legal compliance, or fairness between groups of people. It checks one thing: whether wrong outputs get stopped or caught, and, where some get through, whether you’d know how many.</p>
+      </div>
+      <div>
+        <h3>Private by design</h3>
+        <p>Everything runs in your browser. The link to your answers holds yes and no and your numbers, never the workflow’s name or your notes. Run the tests behind it with <code>npm test</code>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Built by <a href="https://devinhuber.com/">Devin Huber</a> · I build AI systems, and measure how often they’re wrong.</span>
+    <a href="https://github.com/DHuberPortfolio/ready-to-ship" target="_blank" rel="noopener">Source &amp; tests on GitHub</a>
+  </div>
+</footer>
+
+<noscript><div class="wrap"><p class="note warn">The scorecard needs JavaScript. The questions are also in <a href="https://github.com/DHuberPortfolio/ready-to-ship/blob/main/CHECKLIST.md">CHECKLIST.md</a>, to answer on paper.</p></div></noscript>
+
+<script src="checklist.js"></script>
+<script src="score.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

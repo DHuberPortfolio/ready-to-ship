@@ -1,0 +1,15 @@
+{
+  "name": "ready-to-ship",
+  "version": "1.0.0",
+  "description": "Is your AI workflow ready to ship? Twelve yes-or-no questions, each with a bar for a yes, and a scorecard of what to fix first.",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "docs": "node scripts/build-docs.js",
+    "mutants": "node audit/mutants.js"
+  },
+  "engines": {
+    "node": ">=18.3"
+  },
+  "license": "MIT"
+}
